@@ -1,8 +1,4 @@
 #!/usr/bin/env bash
-# ─────────────────────────────────────────────────────
-#  doom-inject.sh
-#  Инжектирует DOOM в сайдбар Codex через CDP
-# ─────────────────────────────────────────────────────
 
 CDP_PORT=9223
 HTTP_PORT=1993
@@ -80,8 +76,6 @@ echo ""
 
 python3 - << 'PYEOF' >/dev/null 2>&1
 import urllib.request, json, socket, struct, base64, time
-
-# ── CDP connect ────────────────────────────────────────
 try:
     data = urllib.request.urlopen("http://localhost:9223/json", timeout=5).read()
     targets = json.loads(data)
@@ -91,8 +85,6 @@ try:
     print(f"  Found target: {page.get('title','?')}")
 except Exception as e:
     print(f"  CDP error: {e}"); exit(1)
-
-# ── WebSocket handshake ────────────────────────────────
 host, port = "localhost", 9223
 path = ws_url.replace(f"ws://localhost:{port}", "")
 key = base64.b64encode(b"doomrocks123456789012").decode()
@@ -126,14 +118,10 @@ def ws_recv(s, timeout=5):
         while len(d)<n: d+=s.recv(n-len(d))
         return d.decode()
     except: return None
-
-# ── Включаем Runtime и Page events ────────────────────
 ws_send(sock, json.dumps({"id":1,"method":"Runtime.enable","params":{}}))
 time.sleep(0.2); ws_recv(sock, timeout=2)
 ws_send(sock, json.dumps({"id":2,"method":"Page.enable","params":{}}))
 time.sleep(0.2); ws_recv(sock, timeout=2)
-
-# ── Сохраняем URL Codex ДО перехода ───────────────────
 ws_send(sock, json.dumps({"id":5,"method":"Runtime.evaluate",
                           "params":{"expression":"window.location.href","returnByValue":True}}))
 codex_url = None
@@ -149,8 +137,6 @@ for _ in range(10):
     except: pass
 
 DOOM_URL = "http://localhost:1993/doom-codex.html"
-
-# ── JS: сайдбар-кнопка ────────────────────────────────
 SIDEBAR_JS = r"""
 (() => {
   if (window.__doom_interval) clearInterval(window.__doom_interval);
@@ -200,8 +186,6 @@ def inject_sidebar():
                               "params":{"expression":SIDEBAR_JS,"returnByValue":True}}))
 
 inject_sidebar()
-
-# Читаем ответ на инжект
 for _ in range(10):
     r = ws_recv(sock, timeout=2)
     if not r: continue
@@ -220,8 +204,6 @@ for _ in range(10):
 print("  Waiting for click... (Ctrl+C to stop)")
 
 on_doom = False
-
-# ── Event loop ─────────────────────────────────────────
 while True:
     raw = ws_recv(sock, timeout=60)
     if not raw: continue
@@ -248,10 +230,9 @@ while True:
             if on_doom:
                 on_doom = False
             else:
-                # Ждём пока React смонтирует nav, потом инжектируем
                 print("  ↩ Codex loaded, waiting for nav...")
                 nav_ready = False
-                for attempt in range(20):   # до 10 секунд (20 × 0.5s)
+                for attempt in range(20):
                     time.sleep(0.5)
                     ws_send(sock, json.dumps({
                         "id": 30,
