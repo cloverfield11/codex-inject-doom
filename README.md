@@ -7,7 +7,7 @@
 
 A proof-of-concept project demonstrating how to dynamically inject and execute legacy software (DOOM via WebAssembly) natively inside an arbitrary Electron/React application (Codex) using the Chrome DevTools Protocol (CDP) and WebSockets.
 
-![Banner Preview](./preview.png) *(Preview placeholder)*
+<img width="1624" height="1044" alt="Снимок экрана 2026-04-14 в 16 51 25" src="https://github.com/user-attachments/assets/d22c081b-2bab-4001-bc49-51c9b0fdd63d" /> *(Preview placeholder)*
 
 ## 🚀 How it works
 
