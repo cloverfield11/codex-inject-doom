@@ -30,7 +30,7 @@ The magic is entirely fileless and minimally invasive. The project consists of j
 No Node.js, no `npm install`, and no huge dependencies required. If you have Python 3 and macOS, you're ready to go.
 
 ```bash
-git clone https://github.com/cloverfield11/doom-codex.git
+git clone https://github.com/cloverfield11/codex-inject-doom.git
 cd doom-codex
 
 # Launch the automated injection sequence
