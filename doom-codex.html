@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CODEX // DOOM</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="https://v8.js-dos.com/latest/js-dos.css">
+
+  <style>
+    :root {
+      --bg: #F9FAFB;
+      --surface: #FFFFFF;
+      --surface-hover: #F3F4F6;
+      --border: #E5E7EB;
+      --text: #111827;
+      --muted: #6B7280;
+      --accent: #2563EB;
+      --accent-hover: #1D4ED8;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      --radius: 12px;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+
+    [data-theme="dark"],
+    :root {
+      --bg: #0F1115;
+      --surface: #1A1D24;
+      --surface-hover: #2A2E39;
+      --border: #333842;
+      --text: #F9FAFB;
+      --muted: #9CA3AF;
+      --accent: #3B82F6;
+      --accent-hover: #60A5FA;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
+    }
+
+    [data-theme="light"] {
+      --bg: #F9FAFB !important;
+      --surface: #FFFFFF !important;
+      --surface-hover: #F3F4F6 !important;
+      --border: #E5E7EB !important;
+      --text: #111827 !important;
+      --muted: #6B7280 !important;
+      --accent: #2563EB !important;
+      --accent-hover: #1D4ED8 !important;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 24px;
+    }
+
+    .header {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: 1px solid transparent;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface-hover);
+    }
+
+    .game-section {
+      width: 100%;
+      max-width: 900px;
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .game-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--surface);
+    }
+
+    .game-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    .game-viewport {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: #000;
+    }
+
+    /* Aggressive CSS to hide all extraneous js-dos overlays (save, keyboard, etc.) */
+    #dos-game button, #dos-game svg, #dos-game [role="button"], #dos-game .pointer-events-auto {
+      display: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+
+    #dos-game canvas {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: contain !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      display: block !important;
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      background: #000 !important;
+    }
+
+    .loader {
+      position: absolute;
+      inset: 0;
+      z-index: 100;
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    .loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loader-text {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    .controls-panel {
+      width: 100%;
+      max-width: 900px;
+      margin-top: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      padding: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .control-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    .control-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .kbd {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 3px 6px;
+      border-radius: 4px;
+      color: var(--muted);
+      min-width: 24px;
+      text-align: center;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    }
+
+    .kbd-group {
+      display: flex;
+      gap: 4px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="brand">
+      <div class="title">Codex Runtime</div>
+      <div class="subtitle">WASM Hypervisor</div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-secondary" id="theme-toggle" title="Toggle Theme">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+          </path>
+        </svg>
+      </button>
+      <button class="btn btn-primary" onclick="console.log('__DOOM_BACK__'); history.back()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Return to Codex
+      </button>
+    </div>
+  </header>
+
+  <main class="game-section">
+    <div class="game-header">
+      <span style="font-weight: 500; font-size: 13px;">DOOM</span>
+      <div class="game-status">
+        <div class="status-dot"></div>
+        <span id="status-text">INITIALIZING</span>
+      </div>
+    </div>
+
+    <div class="game-viewport">
+      <div class="loader" id="loader">
+        <div class="spinner"></div>
+        <div class="loader-text" id="loader-text">Loading game engine...</div>
+      </div>
+      <div id="dos-game"></div>
+    </div>
+  </main>
+
+  <section class="controls-panel">
+    <div class="control-group">
+      <div class="control-title">Movement</div>
+      <div class="control-item">
+        <span>Move</span>
+        <div class="kbd-group">
+          <span class="kbd">↑</span><span class="kbd">↓</span>
+        </div>
+      </div>
+      <div class="control-item">
+        <span>Turn</span>
+        <div class="kbd-group">
+          <span class="kbd">←</span><span class="kbd">→</span>
+        </div>
+      </div>
+      <div class="control-item">
+        <span>Run</span>
+        <span class="kbd">Shift</span>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <div class="control-title">Combat & Interaction</div>
+      <div class="control-item">
+        <span>Fire</span>
+        <span class="kbd">Ctrl</span>
+      </div>
+      <div class="control-item">
+        <span>Use / Open</span>
+        <span class="kbd">Space</span>
+      </div>
+      <div class="control-item">
+        <span>Select Weapon</span>
+        <span class="kbd">1</span><span>-</span><span class="kbd">7</span>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <div class="control-title">System</div>
+      <div class="control-item">
+        <span>Menu</span>
+        <span class="kbd">Esc</span>
+      </div>
+      <div class="control-item">
+        <span>Map</span>
+        <span class="kbd">Tab</span>
+      </div>
+      <div class="control-item">
+        <span>Fullscreen</span>
+        <span class="kbd">F11</span>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://v8.js-dos.com/latest/js-dos.js"></script>
+  <script>
+    (() => {
+      const themeToggle = document.getElementById('theme-toggle');
+      let currentTheme = localStorage.getItem('codex-theme');
+
+      if (!currentTheme) {
+        currentTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+
+      document.documentElement.setAttribute('data-theme', currentTheme);
+
+      themeToggle.addEventListener('click', () => {
+        currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        localStorage.setItem('codex-theme', currentTheme);
+      });
+
+      const loader = document.getElementById('loader');
+      const loaderText = document.getElementById('loader-text');
+      const statusText = document.getElementById('status-text');
+
+      const messages = [
+        "Allocating memory...",
+        "Mounting virtual filesystem...",
+        "Initializing js-dos WASM...",
+        "Reading payload..."
+      ];
+
+      let step = 0;
+      const progressInterval = setInterval(() => {
+        if (step < messages.length) {
+          loaderText.textContent = messages[step++];
+        } else {
+          clearInterval(progressInterval);
+        }
+      }, 800);
+
+      const el = document.getElementById('dos-game');
+
+      setTimeout(() => {
+        loaderText.textContent = "Booting container...";
+
+        try {
+          const ci = Dos(el, {
+            url: 'doom.jsdos',
+            workerThread: true,
+            autoStart: true,
+            noUITools: true,
+            onProgress: (stage, progress) => {
+              if (stage === "extract") loaderText.textContent = "Extracting DOOM.WAD...";
+              if (stage === "download") loaderText.textContent = "Downloading runtime assets...";
+            }
+          });
+
+          const observer = new MutationObserver(() => {
+            const canvas = el.querySelector('canvas');
+            if (canvas) {
+              clearInterval(progressInterval);
+              loaderText.textContent = "Ready.";
+              statusText.textContent = "RUNNING";
+              statusText.style.color = "#10B981";
+              setTimeout(() => {
+                loader.classList.add('hidden');
+                canvas.focus();
+              }, 400);
+              observer.disconnect();
+            }
+          });
+          observer.observe(el, { childList: true, subtree: true });
+
+          setTimeout(() => { loader.classList.add('hidden'); }, 15000);
+
+        } catch (err) {
+          loaderText.textContent = "Boot failed.";
+          statusText.textContent = "ERROR";
+          statusText.style.color = "#EF4444";
+          console.error(err);
+        }
+      }, 500);
+
+      window.addEventListener('resize', () => {
+        const canvas = el.querySelector('canvas');
+        if (canvas) {
+          canvas.style.width = '100%';
+          canvas.style.height = '100%';
+        }
+      });
+
+    })();
+  </script>
+</body>
+
+</html>
